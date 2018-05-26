@@ -12,5 +12,20 @@ namespace jamwow.Controllers
         {
             return View();
         }
+
+        public ActionResult FacebookDownloader()
+        {
+            return View();
+        }
+
+        public ActionResult YoutubeDownloader()
+        {
+            return View();
+        }
+
+        public ActionResult InstagramDownloader()
+        {
+            return View();
+        }
     }
 }

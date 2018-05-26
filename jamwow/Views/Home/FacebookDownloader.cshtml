@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "FacebookDownloader";
+}
+
+<div id="loader"></div>
+
+<div class="jumbotron">
+    <h1>Facebook downloader</h1>
+</div>
+<div id="loader"></div>
+<div id="content" class="row container">
+    <div class="mx-auto">
+        <span class="text-success">กรอก URL Facebook ตรงนี้</span>
+        <input id="fblinksURL" class="mx-2" type="text" />
+        <input id="fbdownload" type="button" value="Download">
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/app")
+    <script>
+        //$('#fbdownload').click(function () {
+        //    window.location.href = "/api/Facebook?link=" + $('#fblinksURL').val();
+        //});
+        $(document).ready(function () {
+            $("div#loader").hide();
+            $("input#fbdownload").click(function () {
+                $("div#loader").show();
+                window.location.href = "/api/Facebook?link=" + $('#fblinksURL').val();
+                setTimeout(function () {
+                    $("div#loader").hide();
+                }, 20000);
+            });
+            $(window).on('load', function () {
+                var x = document.readyState;
+            });
+        });
+    </script>
+}

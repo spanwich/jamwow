@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "InstagramDownloader";
+}
+
+<div class="jumbotron">
+    <h1>Instagram downloader</h1>
+</div>
+<div id="loader"></div>
+<div class="row container">
+    <div id="content" class="mx-auto p-lg-5">
+        <span>กรอก Hashtag Instagram ตรงนี้</span>
+        <input id="iglinksURL" class="mx-2" type="text" />
+        <input id="igdownload" type="button" value="Download">
+    </div>
+    <div class="row">
+        <div id="shoppingCart" class="container mx-auto">
+
+        </div>
+    </divid="content">
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/app")
+    <script>
+        $(document).ready(function () {
+            $('#igdownload').click(function () {
+                $("div#loader").show();
+                $('#igdownload').hide();
+                $('#shoppingCart').empty();
+                $.getJSON("/api/getIgContent?hashtag=" + $('#iglinksURL').val(), function (result) {
+                    $.each(result, function (i, data) {
+                        $('#shoppingCart').append(data);
+                        $('.coreSpriteVideoIconLarge').remove();
+                        $('._tn0ps').addClass("float-left");
+                        $('._tn0ps').addClass("col-md-4");
+                        //$('._tn0ps').attr("style","float:left");
+                    });
+                })
+                    .done(function () {
+                        $("div#loader").hide();
+                        $('#igdownload').show();
+                        console.log("second success");
+                    });
+
+            });
+
+            $('#shoppingCart').on('click', 'a', function (e) {
+                e.preventDefault();
+                var s = $(this).attr("href");
+                var n = s.indexOf('?');
+                var addressValue = s.substring(0, n != -1 ? n : s.length);
+                window.location.href = "/api/Instagram?link=" + addressValue;
+                //alert(addressValue);
+            });
+
+            //$('._2di5p').click(function (e) {
+            //    //e.stopPropagation();
+            //    e.prevendefault();
+            //});
+        });
+    </script>
+}

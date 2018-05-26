@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "YoutubeDownloader";
+}
+
+<div class="jumbotron">
+    <h1>Youtube downloader</h1>
+</div>
+<div id="content" class="row container">
+    <div class="mx-auto p-1">
+        <span>กรอก URL Youtube ตรงนี้</span>
+        <input id="ytlinksURL" class="mx-2" type="text" />
+        <select id="ytsize" name="Size">
+            @*<option value="1080">1080p</option>*@
+            <option value="720">720p</option>
+            <option value="480">480p</option>
+            <option value="360">360p</option>
+        </select>
+        <input id="ytdownload" class="mx-2" type="button" value="Download">
+    </div>
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/app")
+    <script>
+        $('#ytdownload').click(function () {
+            window.location.href = "/api/Youtube?link=" + $('#ytlinksURL').val() + "&size=" + $('#ytsize').val();
+        });
+    </script>
+}
