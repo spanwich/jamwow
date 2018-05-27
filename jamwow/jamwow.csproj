@@ -287,6 +287,7 @@
     <Content Include="Content\bootstrap-reboot.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <None Include="Properties\PublishProfiles\Customs.pubxml" />
     <None Include="Properties\PublishProfiles\jamwow - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\jamwow - Web Deploy.pubxml" />
     <Content Include="Scripts\bootstrap.bundle.js" />

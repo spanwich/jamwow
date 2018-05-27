@@ -37,21 +37,25 @@ namespace jamwow.Controllers
             for (int i = 0; i <= 20; i++)
             {
                 js.ExecuteScript("window.scrollTo(0,88800);");
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
 
-            var webElements = driver.FindElements(By.CssSelector("._6d3hm._mnav9")).ToList();
+            var webElements = driver.FindElements(By.CssSelector("._mck9w._gvoze._tn0ps")).ToList();
 
             List<string> sourceList = new List<string>();
 
-            foreach(var webElement in  webElements)
+            foreach (var webElement in webElements)
             {
-                sourceList.Add(webElement.GetAttribute("innerHTML"));
+                var videoHtml = webElement.GetAttribute("outerHTML");
+                if (videoHtml.Contains("_my8ed"))
+                {
+                    sourceList.Add(videoHtml);
+                }
             }
 
             driver.Dispose();
 
             return Ok(sourceList);
         }
-}
+    }
 }

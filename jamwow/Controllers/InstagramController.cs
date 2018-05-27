@@ -30,34 +30,11 @@ namespace jamwow.Controllers
             ChromeDriver driver = new ChromeDriver(options);
             driver.Navigate().GoToUrl("https://www.instagram.com" + link);
 
-            var linkCollection = driver.FindElementsByTagName("a");
-
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            for (int i = 0; i <= 20; i++)
-            {
-                js.ExecuteScript("window.scrollTo(0,88800);");
-                Thread.Sleep(500);
-            }
-            string imageSource = "";
             string videoSource = "";
             IWebElement webElement;
 
-            try
-            {
-                webElement = driver.FindElementByClassName("_l6uaz");
-                videoSource = webElement.GetAttribute("src");
-            }
-            catch(Exception)
-            {
-                webElement = driver.FindElementByClassName("_2di5p");
-                imageSource = webElement.GetAttribute("src");
-            }
-
-            //String scriptToExecute = "var entries = JSON.stringify(window.performance.getEntries()); return entries;";
-
-            //String netData = js.ExecuteScript(scriptToExecute).ToString();
-
-            //JSPerfModel s = Newtonsoft.Json.JsonConvert.DeserializeObject<JSPerfModel>(netData);
+            webElement = driver.FindElementByClassName("_l6uaz");
+            videoSource = webElement.GetAttribute("src");
 
             //Create a stream for the file
             Stream stream = null;
@@ -91,26 +68,13 @@ namespace jamwow.Controllers
                 // prepare the response to the client. resp is the client Response
                 var resp = HttpContext.Current.Response;
 
-                if (String.IsNullOrEmpty(imageSource))
-                {
-                    //Indicate the type of data being sent
-                    //resp.ContentType = "application/octet-stream";
-                    resp.ContentType = "video/mp4";
-                    //Name the file 
-                    resp.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".mp4" + "\"");
-                    resp.AddHeader("Content-Length", fileResp.ContentLength.ToString());
-                }
-                else
-                {
 
-                    //Indicate the type of data being sent
-                    //resp.ContentType = "application/octet-stream";
-                    resp.ContentType = "image/jpeg";
-                    //Name the file 
-                    resp.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".jpg" + "\"");
-                    resp.AddHeader("Content-Length", fileResp.ContentLength.ToString());
-                }
-
+                //Indicate the type of data being sent
+                //resp.ContentType = "application/octet-stream";
+                resp.ContentType = "video/mp4";
+                //Name the file 
+                resp.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".mp4" + "\"");
+                resp.AddHeader("Content-Length", fileResp.ContentLength.ToString());
 
                 int length;
                 do
@@ -136,6 +100,14 @@ namespace jamwow.Controllers
                         length = -1;
                     }
                 } while (length > 0); //Repeat until no data is read
+            }
+            catch (Exception e)
+            {
+                //Return complete video
+                HttpResponseMessage errorResponse = Request.CreateResponse(HttpStatusCode.OK);
+                errorResponse.Content = new StringContent(e.StackTrace);
+                //fullResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4"); ;
+                return errorResponse;
             }
             finally
             {

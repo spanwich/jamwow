@@ -25,31 +25,40 @@ namespace jamwow.Controllers
              */
             IEnumerable<VideoInfo> videoInfos = DownloadUrlResolver.GetDownloadUrls(link);
 
-            VideoInfo video = videoInfos
-    .First(info => info.VideoType == VideoType.Mp4 && info.Resolution == size);
-
-            /*
-             * If the video has a decrypted signature, decipher it
-             */
-            if (video.RequiresDecryption)
-            {
-                DownloadUrlResolver.DecryptDownloadUrl(video);
-            }
-
-            //var filePath = AppDomain.CurrentDomain.BaseDirectory + "cache-" + DateTime.UtcNow.ToFileTime().ToString();
-
             //Create a stream for the file
             Stream stream = null;
 
-            //This controls how many bytes to read at a time and send to the client
-            int bytesToRead = 40960;
+            var sizeList = videoInfos.Select(p => p.Resolution);
 
-            // Buffer to read bytes in chunk size specified above
-            byte[] buffer = new Byte[bytesToRead];
+            if(!sizeList.Contains(size))
+            {
+                //Return complete video
+                HttpResponseMessage errorResponse = Request.CreateResponse(HttpStatusCode.OK);
+                errorResponse.Content = new StringContent("Selected video size not exist.");
+                //fullResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4"); ;
+                return errorResponse;
+            }
 
-            // The number of bytes read
             try
             {
+
+                VideoInfo video = videoInfos.First(info => info.VideoType == VideoType.Mp4 && info.Resolution == size);
+
+                /*
+                 * If the video has a decrypted signature, decipher it
+                 */
+                if (video.RequiresDecryption)
+                {
+                    DownloadUrlResolver.DecryptDownloadUrl(video);
+                }
+
+                //This controls how many bytes to read at a time and send to the client
+                int bytesToRead = 40960;
+
+                // Buffer to read bytes in chunk size specified above
+                byte[] buffer = new Byte[bytesToRead];
+
+                // The number of bytes read
                 //Create a WebRequest to get the file
                 HttpWebRequest fileReq = (HttpWebRequest)HttpWebRequest.Create(video.DownloadUrl);
 
@@ -97,6 +106,14 @@ namespace jamwow.Controllers
                         length = -1;
                     }
                 } while (length > 0); //Repeat until no data is read
+            }
+            catch (Exception e)
+            {
+                //Return complete video
+                HttpResponseMessage errorResponse = Request.CreateResponse(HttpStatusCode.OK);
+                errorResponse.Content = new StringContent(e.StackTrace);
+                //fullResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4"); ;
+                return errorResponse;
             }
             finally
             {

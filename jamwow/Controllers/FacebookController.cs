@@ -197,7 +197,11 @@ namespace jamwow.Controllers
             }
             catch (Exception e)
             {
-
+                //Return complete video
+                HttpResponseMessage errorResponse = Request.CreateResponse(HttpStatusCode.OK);
+                errorResponse.Content = new StringContent(e.StackTrace);
+                //fullResponse.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("video/mp4"); ;
+                return errorResponse;
             }
             finally
             {
