@@ -13,7 +13,8 @@
     <div class="mx-auto">
         <span class="text-success">กรอก URL Facebook ตรงนี้</span>
         <input id="fblinksURL" class="mx-2" type="text" />
-        <input id="fbdownload" type="button" value="Download">
+        <a id="fblink" class="btn btn-primary d-none" href="#" download>Download</a>
+        <input class="btn btn-light" id="fbdownload" type="button" value="Generate Link" />
     </div>
 </div>
 
@@ -25,16 +26,16 @@
         //    window.location.href = "/api/Facebook?link=" + $('#fblinksURL').val();
         //});
         $(document).ready(function () {
-            $("div#loader").hide();
-            $("input#fbdownload").click(function () {
-                $("div#loader").show();
-                window.location.href = "/api/Facebook?link=" + $('#fblinksURL').val();
-                setTimeout(function () {
-                    $("div#loader").hide();
-                }, 20000);
+            $('#fbdownload').click(function () {
+                //$("div#loader").show();
+                $("input#fbdownload").hide();
+                $("a#fblink").removeClass("d-none");
+                $("a#fblink").attr('href', "/api/Facebook?link=" + $('#fblinksURL').val());
             });
-            $(window).on('load', function () {
-                var x = document.readyState;
+            $('#fblink').click(function () {
+                $("div#loader").show();
+                alert("กรุณาอย่าปิดหน้านี้ ระบบจะเริ่มดาวน์โหลดในไม่ช้า");
+                window.location.href = "/Home/FacebookDownloader";
             });
         });
     </script>

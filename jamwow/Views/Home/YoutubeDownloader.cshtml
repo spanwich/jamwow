@@ -6,25 +6,39 @@
 <div class="jumbotron">
     <h1>Youtube downloader</h1>
 </div>
+<div id="loader"></div>
 <div id="content" class="row container">
     <div class="mx-auto p-1">
         <span>กรอก URL Youtube ตรงนี้</span>
         <input id="ytlinksURL" class="mx-2" type="text" />
         <select id="ytsize" name="Size">
             @*<option value="1080">1080p</option>*@
-            <option value="720">720p</option>
-            <option value="480">480p</option>
-            <option value="360">360p</option>
+            <option value="MP4">Video</option>
+            <option value="MP3">Audio</option>
         </select>
-        <input id="ytdownload" class="mx-2" type="button" value="Download">
+        <a id="ytlink" class="btn btn-light d-none" href="#" download>Download</a>
+        <input class="btn btn-light" id="ytdownload" type="button" value="Generate Link" />
     </div>
 </div>
 @section Scripts{
     @Scripts.Render("~/bundles/knockout")
     @Scripts.Render("~/bundles/app")
     <script>
+        //$(document).ready(function () {
+        //    $("a#ytlink").hide();
+        //});
+
         $('#ytdownload').click(function () {
-            window.location.href = "/api/Youtube?link=" + $('#ytlinksURL').val() + "&size=" + $('#ytsize').val();
+            //$("div#loader").show();
+            $("input#ytdownload").hide();
+            $("a#ytlink").removeClass("d-none");
+            $("a#ytlink").attr('href', "/api/Youtube?link=" + $('#ytlinksURL').val() + "&size=" + $('#ytsize').val());
+            //window.location.href = "/api/Youtube?link=" + $('#ytlinksURL').val() + "&size=" + $('#ytsize').val();
+        });
+        $('#ytlink').click(function () {
+            $("div#loader").show();
+            alert("กรุณาอย่าปิดหน้านี้ ระบบจะเริ่มดาวน์โหลดในไม่ช้า");
+            window.location.href = "/Home/YoutubeDownloader";
         });
     </script>
 }
